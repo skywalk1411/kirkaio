@@ -5,14 +5,14 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="icon" type="image/x-icon" sizes="32x32" href="https://kirka.lukeskywalk.com/favicon.ico">
-    <meta property="og:title" content="kirka.lukeskywalk.com: a lightweight kirka.io chat widget.">
-    <meta name="description" content="kirka.lukeskywalk.com: a lightweight kirka.io chat widget.">
-    <meta property="og:description" content="kirka.lukeskywalk.com: a lightweight kirka.io chat widget.">
+    <meta property="og:title" content="kirka.lukeskywalk.com: a lightweight kirka.io global chat widget.">
+    <meta name="description" content="kirka.lukeskywalk.com: a lightweight kirka.io global chat widget.">
+    <meta property="og:description" content="kirka.lukeskywalk.com: a lightweight kirka.io global chat widget.">
     <meta name="theme-color" content="#000000">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
     <meta name="twitter:card" content="summary_large_image">
-    <title>kirka chat widget</title>
+    <title>kirka.io global chat</title>
     <style>
         html,
         p,
@@ -125,14 +125,14 @@
             }
             let nickname = (x.user === null) ? 'SERVER' : x.user?.name+` [${x.user?.level}]`;
             if (x.user?.role === 'MODERATOR') {
-                nickname = '🔨'+nickname;
+                nickname = '✅'+nickname;
             }
             if (x.user?.role === 'ADMIN') {
                 nickname = '🛡️'+nickname;
             }
-            if (x.user?.role === 'VERIFIED') {
-                nickname = '✅'+nickname;
-            }
+            /*if (x.user?.role === 'VERIFIED') {
+                nickname = '🔨'+nickname;
+            }*/
             const msg = x.message;
             let tr = document.createElement('tr');
             let td1 = document.createElement('td'); //time
@@ -196,7 +196,7 @@
                 if (delivery.type !== 3) {
                     chated(delivery)
                 }
-                console.log(delivery)
+                //console.log(delivery)
             };
         };
         reconnecBm();
