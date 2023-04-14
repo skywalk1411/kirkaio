@@ -130,6 +130,9 @@
             if (x.user?.role === 'ADMIN') {
                 nickname = '🛡️'+nickname;
             }
+            if (x.user?.role === 'VERIFIED') {
+                nickname = '✅'+nickname;
+            }
             const msg = x.message;
             let tr = document.createElement('tr');
             let td1 = document.createElement('td'); //time
