@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="https://kirka.lukeskywalk.com/favicon.ico">
+    <meta property="og:title" content="kirka.lukeskywalk.com: a lightweight kirka.io chat widget.">
+    <meta name="description" content="kirka.lukeskywalk.com: a lightweight kirka.io chat widget.">
+    <meta property="og:description" content="kirka.lukeskywalk.com: a lightweight kirka.io chat widget.">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>kirka chat widget</title>
+    <style>
+        html,
+        p,
+        body {
+            background-color: #000;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            left: 0;
+            top: 0;
+            font-family: 'Consolas', 'Trebuchet MS', Arial;
+            display: grid;
+            grid-template-areas: "chat"
+                "tools";
+            grid-template-rows: 97vh 3vh;
+            white-space: nowrap;
+        }
+        table {
+            border: 0;
+            padding: 0;
+            margin: 0;
+            border-collapse: collapse;
+        }
+        #chatter {
+            grid-area: chat;
+            height: 97vh;
+            vertical-align: top;
+            white-space: nowrap;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+        #tools {
+            grid-area: tools;
+            vertical-align: bottom;
+            height: 3vh;
+        }
+        a:link {
+            color: #a8a8a8;
+            text-decoration: none;
+        }
+        a:visited {
+            text-decoration: none;
+            color: #a8a8a8;
+        }
+        a:hover {
+            text-decoration: none;
+            color: #919191;
+        }
+        a:active {
+            text-decoration: none;
+            color: #a8a8a8;
+        }
+        tr:nth-child(odd) {
+            background: #141414;
+            width: 100vw;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatter">
+        <table id="chat"></table>
+    </div>
+    <script>
+        const settings = {
+            url: 'wss://chat.kirka.io',
+            consoled: false,
+        };
+        let lastData = {
+            last: null,
+            channel: null,
+            string: null,
+            timer: null,
+        };
+        const consoled = (x) => {
+            if (settings.consoled) {
+                console.log(`${new Date().toLocaleTimeString()} ${x}`);
+            }
+        };
+        const errorToText = (code) => {
+            switch (code) {
+                case '1001':
+                    return 'server is down.';
+                case '1002':
+                    return 'terminated, protocol error.';
+                case '1003':
+                    return 'terminated, data error.';
+                case '1004':
+                    return 'reserved.';
+                case '1005':
+                    return 'no status code present.';
+                case '1006':
+                    return 'connection closed abnormally.';
+                case '1007':
+                    return 'terminated, inconsistent type of message.';
+                case '1008':
+                    return 'terminated, received message violate policy.';
+                case '1009':
+                    return 'terminated, message too big.';
+                case '1010':
+                    return 'terminated, server not responding.';
+                case '1011':
+                    return 'terminated, unexpected condition encountered.';
+                default:
+            }
+        };
+        const chated = (x) => {
+            let status;
+            if (x.user === null) {
+                status = 'SERVER'
+            }
+            let nickname = (x.user === null) ? 'SERVER' : x.user?.name+` [${x.user?.level}]`;
+            if (x.user?.role === 'MODERATOR') {
+                nickname = '🔨'+nickname;
+            }
+            if (x.user?.role === 'ADMIN') {
+                nickname = '🛡️'+nickname;
+            }
+            const msg = x.message;
+            let tr = document.createElement('tr');
+            let td1 = document.createElement('td'); //time
+            //let td2 = document.createElement('td'); //status
+            //let td3 = document.createElement('td'); //chan
+            let tdC = document.createElement('td'); //nick
+            let td4 = document.createElement('td'); //msg
+            td1.innerHTML = new Date().toLocaleTimeString();
+            td1.style.whiteSpace = 'nowrap';
+            td1.style.verticalAlign = 'top';
+            //td2.innerHTML = status;
+            //td2.style.whiteSpace = 'nowrap';
+            //td2.style.verticalAlign = 'top';
+            //td3.innerHTML = chan;
+            //td3.style.whiteSpace = 'nowrap';
+            //td3.style.verticalAlign = 'top';
+            //td3.style.textAlign = 'right';
+            tdC.innerHTML = nickname;
+            tdC.style.whiteSpace = 'nowrap';
+            tdC.style.verticalAlign = 'top';
+            tdC.style.textAlign = 'right';
+            tdC.style.paddingLeft = '10px';
+            td4.textContent = ' ' + msg;
+            td4.style.whiteSpace = 'normal';
+            td4.style.verticalAlign = 'top';
+            td4.style.paddingLeft = '10px';
+            td4.style.width = '100vw';
+            tr.appendChild(td1);
+            //tr.appendChild(td2);
+            //tr.appendChild(td3);
+            tr.appendChild(tdC);
+            tr.appendChild(td4);
+            document.getElementById('chat').appendChild(tr);
+            let chatDiv = document.getElementById('chat');
+            chatDiv.scrollIntoView(false);
+        };
+        consoled(`[init] #client connecting...`);
+        chated({type: 2, user: null, message: 'kirka.io chat widget connecting...'});
+        var wsBm = null;
+        const reconnecBm = () => {
+            wsBm = new WebSocket(settings.url, "protocolOne");
+            wsBm.onopen = function (event) {
+                clearInterval(lastData.timer);
+                chated({type: 2, user: null, message: 'kirka.io chat widget connected.'});
+                consoled(`[init] #client connected.`);
+            };
+            wsBm.onclose = function (event) {
+                consoled(`[err] #client (${event.code}) ${errorToText(`${event.code}`)}`);
+                consoled(`[err] #client reconnecting...`);
+                chated({type: 2, user: null, message: 'kirka.io chat widget disconnected. reconnecting...'});
+                wsBm = null;
+                lastData.timer = setInterval(reconnecBm, 5000);
+            };
+            wsBm.onmessage = function (message) {
+                const delivery = JSON.parse(message.data);
+                if (delivery.type === 3) {
+                    for (let i=0; i<delivery.messages.length; i++) {
+                        chated(delivery.messages[i])
+                    }
+                }
+                if (delivery.type !== 3) {
+                    chated(delivery)
+                }
+                console.log(delivery)
+            };
+        };
+        reconnecBm();
+    </script>
+</body>
+</html>
