@@ -11,7 +11,7 @@ https://github.com/skywalk1411/kirkaio/releases
 
 ![image](https://user-images.githubusercontent.com/61213518/231030039-5b49f0e1-61ad-4787-9e73-ff002a7df9c7.png)
 
-https://github.com/skywalk1411/kirkaio/releases/tag/v4.20
+https://github.com/skywalk1411/kirkaio/releases/tag/v4.201
 
 -Funeral Grounds:
 
