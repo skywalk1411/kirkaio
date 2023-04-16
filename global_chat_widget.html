@@ -129,7 +129,7 @@
                 const msg = x.message;
                 if (x.user != null && x.user?.name === preferences.lastUser) {
                     let oldMessage = document.getElementById(`ID${preferences.nonce-1}`);
-                    oldMessage.innerHTML = '<p>'+oldMessage.textContent+'</p><p>' + x.message + '</p>';
+                    oldMessage.innerHTML = '<p>'+oldMessage.innerHTML+'</p><p>' + x.message + '</p>';
                     if (preferences.autoscroll === 1) {
                         document.getElementById('chatter').scrollIntoView(false);
                     }
