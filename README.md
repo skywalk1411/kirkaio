@@ -11,7 +11,7 @@ https://github.com/skywalk1411/kirkaio/releases
 
 ![image](https://user-images.githubusercontent.com/61213518/232266983-289f6011-90eb-4247-96bc-c41fc40e2dfb.png)
 
-https://github.com/skywalk1411/kirkaio/releases/tag/v7.7780
+https://github.com/skywalk1411/kirkaio/releases/tag/v7.7783
 
 -Race Track:
 
