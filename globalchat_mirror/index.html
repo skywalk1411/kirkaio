@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="https://kirka.lukeskywalk.com/favicon.ico">
+    <meta property="og:title" content="kirka.lukeskywalk.com: a lightweight unofficial kirka.io global chat mirror.">
+    <meta name="description" content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
+    <meta property="og:description" content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>kirka.io global chat mirror</title>
+    <link rel="stylesheet" href="/static/bootstrap/5.3.0-alpha1/css/bootstrap.min.css" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD">
+    <style>
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body>
+    <script fetchpriority="high" src="/static/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"></script>
+    <div class="container-fluid">
+        <div id="chatter">
+        </div>
+        <div class="card fixed-end fixed-top col-sm-2 bg-dark-subtle">
+            <div class="card-body">
+                <div class="form-check">
+                    <input class="form-check-input" onclick="autoscroll()" type="checkbox" id="autoscrolling" value="1"
+                        checked>
+                    <label class="form-check-label" for="autoscrolling">autoscroll down</label>
+                </div>
+            </div>
+        </div>
+        <script>
+            const itemTag = /(\[.*?\|.*?\|.*?\|.*?\])/gim;
+            const tradeTag = /(\*\*\/trade accept (\d.*?)\*\*)/gim;
+            const settings = {
+                url: 'wss://chat.kirka.io',
+            };
+            let preferences = {
+                consoled: false,
+                autoscroll: 1,
+                nonce: 0,
+                lastUser: null,
+            };
+            const autoscroll = () => {
+                if (preferences.autoscroll === 1) {
+                    preferences.autoscroll = 0;
+                } else {
+                    preferences.autoscroll = 1;
+                }
+                if (preferences.consoled === true) {
+                    console.log({ autoscroll: preferences.autoscroll });
+                }
+            };
+            let lastData = {
+                timer: null,
+            };
+            const consoled = (x) => {
+                if (preferences.consoled) {
+                    console.log(`${new Date().toLocaleTimeString()} ${x}`);
+                }
+            };
+            const errorToText = (code) => {
+                switch (code) {
+                    case '1001':
+                        return 'server is down.';
+                    case '1002':
+                        return 'terminated, protocol error.';
+                    case '1003':
+                        return 'terminated, data error.';
+                    case '1004':
+                        return 'reserved.';
+                    case '1005':
+                        return 'no status code present.';
+                    case '1006':
+                        return 'connection closed abnormally.';
+                    case '1007':
+                        return 'terminated, inconsistent type of message.';
+                    case '1008':
+                        return 'terminated, received message violate policy.';
+                    case '1009':
+                        return 'terminated, message too big.';
+                    case '1010':
+                        return 'terminated, server not responding.';
+                    case '1011':
+                        return 'terminated, unexpected condition encountered.';
+                    default:
+                }
+            };
+            const copyNickname = async (target) => {
+                let copyText = document.getElementById(target);
+                copyText.select();
+                copyText.setSelectionRange(0, 99999);
+                try {
+                    await navigator.clipboard.writeText(copyText.value);
+                } catch (err) {
+                    try {
+                        document.execCommand('copy');
+                    } catch (err) {
+                        throw err;
+                    }
+                }
+            };
+            const chated = (x) => {
+                let nickname = (x.user === null) ? 'SERVER' : x.user?.name + ` [${x.user?.level}] #${x.user?.shortId}`;
+                if (x.user?.role === 'MODERATOR') {
+                    nickname = '✅' + nickname;
+                }
+                if (x.user?.role === 'ADMIN') {
+                    nickname = '🛡️' + nickname;
+                }
+                const msg = x.message;
+                if (x.user != null && x.user?.name === preferences.lastUser) {
+                    let oldMessage = document.getElementById(`ID${preferences.nonce-1}`);
+                    oldMessage.innerHTML = '<p>'+oldMessage.innerHTML+'</p><p>' + x.message + '</p>';
+                    if (preferences.autoscroll === 1) {
+                        document.getElementById('chatter').scrollIntoView(false);
+                    }
+                } else {
+                    let div1 = document.createElement('div');
+                    let divH = document.createElement('div');
+                    if (x.user === null) {
+                        div1.setAttribute('class', 'toast fade show mt-1 mb-1 col-sm-10 text-bg-secondary');
+                    } else {
+                        div1.setAttribute('class', 'toast fade show mt-1 mb-1 col-sm-10');
+                    }
+                    div1.style.width = '100%'
+                    div1.setAttribute('aria-live', 'assertive');
+                    div1.setAttribute('role', 'alert');
+                    div1.setAttribute('aria-atomic', 'true');
+                    div1.setAttribute('animate', 'true');
+                    divH.setAttribute('class', 'toast-header');
+                    let big = document.createElement('strong');
+                    let small = document.createElement('small');
+                    if (x.user === null) {
+                        big.setAttribute('class', 'me-auto text-light');
+                    } else {
+                        big.setAttribute('class', 'me-auto');
+                    }
+                    let post = document.createElement('div');
+                    if (x.user?.role === 'MODERATOR') {
+                        post.setAttribute('class', 'toast-body text-info');
+                        post.setAttribute('id', `ID${preferences.nonce}`);
+                    } else if (x.user?.role === 'ADMIN') {
+                        post.setAttribute('class', 'toast-body text-info');
+                        post.setAttribute('id', `ID${preferences.nonce}`);
+                    } else {
+                        post.setAttribute('class', 'toast-body text-light');
+                        post.setAttribute('id', `ID${preferences.nonce}`);
+                    }
+                    big.textContent = nickname;
+                    small.textContent = new Date().toLocaleTimeString();
+                    post.textContent = msg;
+                    divH.appendChild(big);
+                    divH.appendChild(small);
+                    div1.appendChild(divH);
+                    div1.appendChild(post);
+                    document.getElementById('chatter').appendChild(div1);
+                    preferences.nonce += 1;
+                    preferences.lastUser = x.user?.name;
+                    if (preferences.autoscroll === 1) {
+                        document.getElementById('chatter').scrollIntoView(false);
+                    }
+                }
+            };
+            chated({ type: 2, user: null, message: 'kirka.io chat connecting...' });
+            var wsBm = null;
+            const reconnecBm = () => {
+                wsBm = new WebSocket(settings.url, "protocolOne");
+                wsBm.onopen = function (event) {
+                    clearInterval(lastData.timer);
+                    chated({ type: 2, user: null, message: 'kirka.io chat connected.' });
+                };
+                wsBm.onclose = function (event) {
+                    chated({ type: 2, user: null, message: `kirka.io chat widget disconnected (${event.code}) ${errorToText(event.code)}. reconnecting...` });
+                    wsBm = null;
+                    lastData.timer = setInterval(reconnecBm, 5000);
+                };
+                wsBm.onmessage = function (message) {
+                    const delivery = JSON.parse(message.data);
+                    if (delivery.type === 3) {
+                        for (let i = delivery.messages.length-1; i > -1; i--) {
+                            chated(delivery.messages[i])
+                        }
+                    }
+                    if (delivery.type !== 3) {
+                        chated(delivery)
+                    }
+                    if (preferences.consoled === true) {
+                        console.log(delivery);
+                    }
+                };
+            };
+            reconnecBm();
+        </script>
+    </div>
+</body>
+</html>
