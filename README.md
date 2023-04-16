@@ -35,6 +35,8 @@ https://github.com/skywalk1411/kirkaio/releases/tag/v1.6
 
 -Kirka.io global chat mirror sources:
 
+https://kirka.lukeskywalk.com
+
 https://github.com/skywalk1411/kirkaio/tree/main/globalchat_mirror
 
 =Textures=
