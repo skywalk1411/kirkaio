@@ -7,6 +7,12 @@ Releases:
 
 https://github.com/skywalk1411/kirkaio/releases
 
+-Waterfalls:
+
+![image](https://user-images.githubusercontent.com/61213518/232266983-289f6011-90eb-4247-96bc-c41fc40e2dfb.png)
+
+https://github.com/skywalk1411/kirkaio/releases/tag/v7.7780
+
 -Race Track:
 
 ![image](https://user-images.githubusercontent.com/61213518/231030039-5b49f0e1-61ad-4787-9e73-ff002a7df9c7.png)
