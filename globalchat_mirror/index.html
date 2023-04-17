@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="https://kirka.lukeskywalk.com/favicon.ico">
+    <meta property="og:title" content="kirka.lukeskywalk.com: a lightweight unofficial kirka.io global chat mirror.">
+    <meta name="description" content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
+    <meta property="og:description" content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>kirka.io global chat mirror</title>
+    <link rel="stylesheet" href="/static/bootstrap/5.3.0-alpha1/css/bootstrap.min.css" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD">
+    <style>
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body>
+    <script fetchpriority="high" src="/static/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"></script>
+    <div class="container-fluid">
+        <div id="chatter">
+        </div>
+        <div class="card fixed-end fixed-top col-sm-2 bg-dark-subtle">
+            <div class="card-body">
+                <div class="form-check">
+                    <input class="form-check-input" onclick="autoscroll()" type="checkbox" id="autoscrolling" checked>
+                    <label class="form-check-label" for="autoscrolling">autoscroll down</label>
+                </div>
+            </div>
+        </div>
+        <script>
+            const itemTag = /(\[.*?\|.*?\|.*?\|.*?\]).*/i;
+            const tradeTag = /(\*\*\/trade accept (\d.*?)\*\*)/i;
+            const commonTag = /(\[.*?(\|.*?\||\|\|).*?\|COMMON]).*/i;
+            const rareTag = /(\[.*?(\|.*?\||\|\|?).*?\|RARE\]).*/i;
+            const epicTag = /(\[.*?(\|.*?\||\|\|?).*?\|EPIC\]).*/i;
+            const legendaryTag = /(\[.*?(\|.*?\||\|\|?).*?\|LEGENDARY\]).*/i;
+            const mythicalTag = /(\[.*?(\|.*?\||\|\|?).*?\|MYTHICAL\]).*/i;
+            document.getElementById('autoscrolling').checked = true;
+            const trimMessage = (messageSplit) => {
+                let delivery = document.createElement('p');
+                delivery.setAttribute('class','mb-0')
+                for ( let i=0; i < messageSplit.length; i++) {
+                    let sample = document.createElement('span');
+                    let [spacedHack,hackStatus,tradeStatus] = [null,0,0];
+                    const msgSplitStartWithBracket = messageSplit[i].indexOf('[')===0;
+                    const msgSplitDoesntEndWithCloseBracket = !messageSplit[i].match(/\]/);
+                    const msgSplitPlusOneFitLength = i+1 < messageSplit.length;
+                    const msgSplitPlusOneEndWithCloseBracket = messageSplit[i+1]?.match(/\]/);
+                    const msgSplitPlusTwoFitLength = i+2 < messageSplit.length;
+                    const msgSplitPlusTwoEndWithCloseBracket = messageSplit[i+2]?.match(/\]/);
+                    if (msgSplitStartWithBracket && msgSplitDoesntEndWithCloseBracket) {
+                        if (msgSplitPlusOneFitLength && msgSplitPlusOneEndWithCloseBracket) {
+                            spacedHack = messageSplit[i]+' '+messageSplit[i+1];
+                            hackStatus = 1; 
+                        }
+                        if (msgSplitPlusTwoFitLength && msgSplitPlusTwoEndWithCloseBracket) {
+                            spacedHack = messageSplit[i]+' '+messageSplit[i+1]+' '+messageSplit[i+2];
+                            hackStatus = 2;
+                        }
+                    }
+                    const msgSplitHasCommonTag = commonTag.test(messageSplit[i]);
+                    const msgSplitIsHackedOneAndHasCommonTag = (hackStatus===1&&commonTag.test(spacedHack));
+                    const msgSplitIsHackedTwoAndHasCommonTag = (hackStatus===2&&commonTag.test(spacedHack));
+                    const stateIsHackedOneOrTwo = (hackStatus===1||hackStatus===2);
+                    const msgSplitHasRareTag = rareTag.test(messageSplit[i]);
+                    const msgSplitIsHackedOneAndHasRareTag = (hackStatus===1&&rareTag.test(spacedHack));
+                    const msgSplitIsHackedTwoAndHasRareTag = (hackStatus===2&&rareTag.test(spacedHack));
+                    const msgSplitHasEpicTag = epicTag.test(messageSplit[i]);
+                    const msgSplitIsHackedOneAndHasEpicTag = (hackStatus===1&&epicTag.test(spacedHack));
+                    const msgSplitIsHackedTwoAndHasEpicTag = (hackStatus===2&&epicTag.test(spacedHack));
+                    const msgSplitHasLegendaryTag = legendaryTag.test(messageSplit[i]);
+                    const msgSplitIsHackedOneAndHasLegendaryTag = (hackStatus===1&&legendaryTag.test(spacedHack));
+                    const msgSplitIsHackedTwoAndHasLegendaryTag = (hackStatus===2&&legendaryTag.test(spacedHack));
+                    const msgSplitHasMythicalTag = mythicalTag.test(messageSplit[i])
+                    const msgSplitIsHackedOneAndHasMythicalTag = (hackStatus===1&&mythicalTag.test(spacedHack));
+                    const msgSplitIsHackedTwoAndHasMythicalTag = (hackStatus===2&&mythicalTag.test(spacedHack));
+                    const msgSplitHasTradeTag = messageSplit[i]==='**/trade';
+                    if (msgSplitHasCommonTag||msgSplitIsHackedOneAndHasCommonTag||msgSplitIsHackedTwoAndHasCommonTag) {
+                        sample.style.color = 'Aquamarine';
+                        if (stateIsHackedOneOrTwo) {
+                            sample.textContent = `${spacedHack.replace('|COMMON]',']')}`;
+                        } else {
+                            sample.textContent = `${messageSplit[i].replace('|COMMON]',']')}`;
+                        }
+                    } else if (msgSplitHasRareTag||msgSplitIsHackedOneAndHasRareTag||msgSplitIsHackedTwoAndHasRareTag) {
+                        sample.style.color = 'Aqua';
+                        if (hackStatus===1||hackStatus===2) {
+                            sample.textContent = `${spacedHack.replace('|RARE]',']')}`;
+                        } else {
+                            sample.textContent = `${messageSplit[i].replace('|RARE]',']')}`;
+                        }
+                    } else if (msgSplitHasEpicTag||msgSplitIsHackedOneAndHasEpicTag||msgSplitIsHackedTwoAndHasEpicTag) {
+                        sample.style.color = 'BlueViolet'
+                        if (hackStatus===1||hackStatus===2) {
+                            sample.textContent = `${spacedHack.replace('|EPIC]',']')}`;
+                        } else {
+                            sample.textContent = `${messageSplit[i].replace('|EPIC]',']')}`;
+                        }
+                    } else if (msgSplitHasLegendaryTag||msgSplitIsHackedOneAndHasLegendaryTag||msgSplitIsHackedTwoAndHasLegendaryTag) {
+                        sample.setAttribute('class','text-warning');
+                        if (hackStatus===1||hackStatus===2) {
+                            sample.textContent = `${spacedHack.replace('|LEGENDARY]',']')}`;
+                        } else {
+                            sample.textContent = `${messageSplit[i].replace('|LEGENDARY]',']')}`;
+                        }
+                    } else if (msgSplitHasMythicalTag||msgSplitIsHackedOneAndHasMythicalTag||msgSplitIsHackedTwoAndHasMythicalTag) {
+                        sample.style.color = 'FireBrick';
+                        if (hackStatus===1||hackStatus===2) {
+                            sample.textContent = `${spacedHack.replace('|MYTHICAL]',']')}`;
+                        } else {
+                            sample.textContent = `${messageSplit[i].replace('|MYTHICAL]',']')}`;
+                        }
+                    } else if (msgSplitHasTradeTag) {
+                        sample.setAttribute('class','text-danger-emphasis stretched-link');
+                        sample.setAttribute('href',`javascript:;`);
+                        sample.setAttribute('role','button');
+                        sample.setAttribute('onclick',`copyClipboard('TRADE${preferences.nonce}')`);
+                        sample.setAttribute('id',`TRADE${preferences.nonce}`);
+                        let tagSpacer = document.createElement('span');
+                        tagSpacer.setAttribute('class','text-danger-emphasis');
+                        tagSpacer.textContent = '**';
+                        delivery.appendChild(tagSpacer);
+                        tradeStatus = 1;
+                        let curedTrade = `${messageSplit[i].replace('**','')} ${messageSplit[i+1]} ${messageSplit[i+2].replace('**','')}`;
+                        sample.textContent = curedTrade;
+                        i+=2;
+                    }  else {
+                        sample.textContent = `${messageSplit[i]}`;
+                    }
+                    i = (hackStatus===1)? i+1 : (hackStatus===2) ? i+2 : i;
+                    if (i===messageSplit.length-1) {
+                        delivery.appendChild(sample);
+                        if (tradeStatus === 1) {
+                            let tagSpacer = document.createElement('span');
+                            tagSpacer.setAttribute('class','text-danger-emphasis');
+                            tagSpacer.textContent = '**';
+                            delivery.appendChild(tagSpacer);
+                        }
+                    } else {
+                        let spacer = document.createElement('span');
+                        spacer.textContent = ' ';
+                        delivery.appendChild(sample);
+                        if (tradeStatus === 1) {
+                            let tagSpacer = document.createElement('span');
+                            tagSpacer.setAttribute('class','text-danger-emphasis');
+                            tagSpacer.textContent = '**';
+                            delivery.appendChild(tagSpacer);
+                        }
+                        delivery.appendChild(spacer);
+                    }
+                }
+                return delivery;
+            };
+            const settings = {
+                url: 'wss://chat.kirka.io',
+            };
+            let preferences = {
+                consoled: false,
+                autoscroll: 1,
+                nonce: 0,
+                lastUser: null,
+            };
+            const autoscroll = () => {
+                if (preferences.autoscroll === 1) {
+                    preferences.autoscroll = 0;
+                } else {
+                    preferences.autoscroll = 1;
+                }
+                if (preferences.consoled === true) {
+                    console.log({ autoscroll: preferences.autoscroll });
+                }
+            };
+            let lastData = {
+                timer: null,
+            };
+            const consoled = (x) => {
+                if (preferences.consoled) {
+                    console.log(`${new Date().toLocaleTimeString()} ${x}`);
+                }
+            };
+            const errorToText = (code) => {
+                switch (code) {
+                    case '1001':
+                        return 'server is down.';
+                    case '1002':
+                        return 'terminated, protocol error.';
+                    case '1003':
+                        return 'terminated, data error.';
+                    case '1004':
+                        return 'reserved.';
+                    case '1005':
+                        return 'no status code present.';
+                    case '1006':
+                        return 'connection closed abnormally.';
+                    case '1007':
+                        return 'terminated, inconsistent type of message.';
+                    case '1008':
+                        return 'terminated, received message violate policy.';
+                    case '1009':
+                        return 'terminated, message too big.';
+                    case '1010':
+                        return 'terminated, server not responding.';
+                    case '1011':
+                        return 'terminated, unexpected condition encountered.';
+                    default:
+                }
+            };
+            const copyClipboard = async (target)=> {
+                let range = document.createRange();
+                range.selectNode(document.getElementById(target));
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand("copy");
+                window.getSelection().removeAllRanges();
+            };
+            const testChated = () => {
+                let delivery = {message: 'MUFASA_685#Q15D2K is offering [TEST||BODY|COMMON], [Galaxy|LAR|WEAPON_SKIN|EPIC], [Winter|Weatie|WEAPON_SKIN|RARE]x2, [Spectacular|AR-9|WEAPON_SKIN|LEGENDARY], [Pink Demon|M60|WEAPON_SKIN|MYTHICAL], [Fur|VITA|WEAPON_SKIN|EPIC], [Hardened|VITA|WEAPON_SKIN|EPIC] for [Black Metal 2.0|VITA|WEAPON_SKIN|LEGENDARY], type  **/trade accept 10848** to accept this offer',type: 2,user: null/*{ id: 'blabla',level: 669,name: 'testsubject',role: 'USER',shortId: 'BUBU4A'}*/};
+                chated(delivery);
+            };
+            const chated = (x) => {
+                let nickname = (x.user === null) ? 'SERVER' : x.user?.name + ` [${x.user?.level}] `;
+                if (x.user?.role === 'MODERATOR') {
+                    nickname = '✅' + nickname;
+                }
+                if (x.user?.role === 'ADMIN') {
+                    nickname = '🛡️' + nickname;
+                }
+                const msg = x.message;
+                const msgSplit = msg.trim().split(/ +/g);
+                const userIsntServerAndIsLastPostedMessage = (x.user != null && x.user?.name === preferences.lastUser);
+                if (userIsntServerAndIsLastPostedMessage) {
+                    let oldMessage = document.getElementById(`ID${preferences.nonce-1}`);
+                    oldMessage.appendChild(trimMessage(msgSplit));
+                    if (preferences.autoscroll === 1) {
+                        document.getElementById('chatter').scrollIntoView(false);
+                    }
+                } else {
+                    let div1 = document.createElement('div');
+                    let divH = document.createElement('div');
+                    const userIsServer = x.user === null;
+                    if (userIsServer) {
+                        div1.setAttribute('class', 'toast fade show mt-1 mb-1 col-sm-10 text-bg-secondary');
+                    } else {
+                        div1.setAttribute('class', 'toast fade show mt-1 mb-1 col-sm-10');
+                    }
+                    div1.style.width = '100%'
+                    div1.setAttribute('aria-live', 'assertive');
+                    div1.setAttribute('role', 'alert');
+                    div1.setAttribute('aria-atomic', 'true');
+                    div1.setAttribute('animate', 'true');
+                    divH.setAttribute('class', 'toast-header');
+                    let big = document.createElement('strong');
+                    let small = document.createElement('small');
+                    if (userIsServer) {
+                        big.setAttribute('class', 'me-auto text-light');
+                    } else {
+                        big.setAttribute('class', 'me-auto');
+                    }
+                    let post = document.createElement('div');
+                    const userIsModerator = (x.user?.role === 'MODERATOR');
+                    const userIsAdmin = (x.user?.role === 'ADMIN');
+                    if (userIsModerator) {
+                        post.setAttribute('class', 'toast-body text-info mb-0');
+                        post.setAttribute('id', `ID${preferences.nonce}`);
+                    } else if (userIsAdmin) {
+                        post.setAttribute('class', 'toast-body text-info mb-0');
+                        post.setAttribute('id', `ID${preferences.nonce}`);
+                    } else {
+                        post.setAttribute('class', 'toast-body text-light mb-0');
+                        post.setAttribute('id', `ID${preferences.nonce}`);
+                    }
+                    big.textContent = nickname;
+                    //let bigShortId = document.createElement('span');
+                    //bigShortId.setAttribute('id', `USER#${x.user?.shortId}`);
+                    //bigShortId.textContent = `#${x.user?.shortId}`;
+                    let bigShortLink = document.createElement('span');
+                    if (!userIsServer) {
+                        bigShortLink.setAttribute('id', `USER${preferences.nonce}${x.user?.shortId}`);
+                        bigShortLink.setAttribute('class','stretched-link text-secondary');
+                        bigShortLink.setAttribute('href',`javascript:;`);
+                        bigShortLink.setAttribute('role','button');
+                        bigShortLink.setAttribute('onclick',`copyClipboard('USER${preferences.nonce}${x.user?.shortId}')`);
+                        bigShortLink.textContent = `#${x.user?.shortId}`;
+                    }
+                    
+                    //big.appendChild(bigShortId);
+                    big.appendChild(bigShortLink);
+                    small.textContent = new Date().toLocaleTimeString();
+                    post.appendChild(trimMessage(msgSplit));
+                    divH.appendChild(big);
+                    divH.appendChild(small);
+                    div1.appendChild(divH);
+                    div1.appendChild(post);
+                    document.getElementById('chatter').appendChild(div1);
+                    preferences.nonce += 1;
+                    preferences.lastUser = x.user?.name;
+                    if (preferences.autoscroll === 1) {
+                        document.getElementById('chatter').scrollIntoView(false);
+                    }
+                }
+            };
+            chated({ type: 2, user: null, message: 'kirka.io chat connecting...' });
+            var wsBm = null;
+            const reconnecBm = () => {
+                wsBm = new WebSocket(settings.url, "protocolOne");
+                wsBm.onopen = function (event) {
+                    clearInterval(lastData.timer);
+                    chated({ type: 2, user: null, message: 'kirka.io chat connected.' });
+                };
+                wsBm.onclose = function (event) {
+                    chated({ type: 2, user: null, message: `kirka.io chat widget disconnected (${event.code}) ${errorToText(event.code)}. reconnecting...` });
+                    wsBm = null;
+                    lastData.timer = setInterval(reconnecBm, 5000);
+                };
+                wsBm.onmessage = function (message) {
+                    const delivery = JSON.parse(message.data);
+                    if (delivery.type === 3) {
+                        for (let i = delivery.messages.length-1; i > -1; i--) {
+                            chated(delivery.messages[i])
+                        }
+                    }
+                    if (delivery.type !== 3) {
+                        chated(delivery)
+                    }
+                    if (preferences.consoled === true) {
+                        console.log(delivery);
+                    }
+                };
+            };
+            reconnecBm();
+        </script>
+    </div>
+</body>
+</html>
