@@ -64,15 +64,12 @@
                         if (i+1 < messageSplit.length && messageSplit[i+1].match(/\]/)) {
                             spacedHack = messageSplit[i]+' '+messageSplit[i+1];
                             hackStatus = 1; 
-                            // @@@ black metal 2.0 bug
                         }
                         if (i+2 < messageSplit.length && messageSplit[i+2].match(/\]/)) {
                             spacedHack = messageSplit[i]+' '+messageSplit[i+1]+' '+messageSplit[i+2];
                             hackStatus = 2;
                         }
                     }
-                    //console.log(hackStatus,messageSplit[i],commonTag.test(messageSplit[i]),rareTag.test(messageSplit[i]),epicTag.test(messageSplit[i]),legendaryTag.test(messageSplit[i]),mythicalTag.test(messageSplit[i]));
-                    //console.log(hackStatus,messageSplit[i]+' '+messageSplit[i+1],commonTag.test(messageSplit[i]+' '+messageSplit[i+1]),rareTag.test(messageSplit[i]+' '+messageSplit[i+1]),epicTag.test(messageSplit[i]+' '+messageSplit[i+1]),legendaryTag.test(messageSplit[i]+' '+messageSplit[i+1]),mythicalTag.test(messageSplit[i]+' '+messageSplit[i+1]));
                     if (commonTag.test(messageSplit[i])||(hackStatus===1&&commonTag.test(spacedHack))||(hackStatus===2&&commonTag.test(spacedHack))) {
                         sample.style.color = 'Aquamarine';
                         if (hackStatus===1||hackStatus===2) {
@@ -213,7 +210,6 @@
                 if (x.user != null && x.user?.name === preferences.lastUser) {
                     let oldMessage = document.getElementById(`ID${preferences.nonce-1}`);
                     oldMessage.appendChild(trimMessage(msgSplit));
-                    //oldMessage.innerHTML = '<p>'+oldMessage.innerHTML+'</p><p>' + trimMessage(msgSplit) + '</p>';
                     if (preferences.autoscroll === 1) {
                         document.getElementById('chatter').scrollIntoView(false);
                     }
