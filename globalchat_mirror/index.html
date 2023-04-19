@@ -289,9 +289,6 @@
                         post.setAttribute('id', `ID${preferences.nonce}`);
                     }
                     big.textContent = nickname;
-                    //let bigShortId = document.createElement('span');
-                    //bigShortId.setAttribute('id', `USER#${x.user?.shortId}`);
-                    //bigShortId.textContent = `#${x.user?.shortId}`;
                     let bigShortLink = document.createElement('span');
                     if (!userIsServer) {
                         bigShortLink.setAttribute('id', `USER${preferences.nonce}${x.user?.shortId}`);
@@ -301,8 +298,6 @@
                         bigShortLink.setAttribute('onclick',`copyClipboard('USER${preferences.nonce}${x.user?.shortId}')`);
                         bigShortLink.textContent = `#${x.user?.shortId}`;
                     }
-                    
-                    //big.appendChild(bigShortId);
                     big.appendChild(bigShortLink);
                     small.textContent = new Date().toLocaleTimeString();
                     post.appendChild(trimMessage(msgSplit));
@@ -326,9 +321,14 @@
                     clearInterval(lastData.timer);
                     chated({ type: 2, user: null, message: 'kirka.io chat connected.' });
                 };
+                wsBm.onerror = function (err) {
+                    chated({ type: 2, user: null, message: `kirka.io chat encountered an error ${err}.`});
+                    wsBm.close();
+                }
                 wsBm.onclose = function (event) {
                     chated({ type: 2, user: null, message: `kirka.io chat widget disconnected (${event.code}) ${errorToText(event.code)}. reconnecting...` });
                     wsBm = null;
+                    wsBm.close();
                     lastData.timer = setInterval(reconnecBm, 5000);
                 };
                 wsBm.onmessage = function (message) {
