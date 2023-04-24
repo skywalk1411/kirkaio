@@ -7,6 +7,10 @@ skywalk #7VUNQK
 
 https://github.com/skywalk1411/kirkaio/releases
 
+-Mothership:
+
+https://github.com/skywalk1411/kirkaio/releases/tag/v2.23
+
 -Flooded:
 
 https://github.com/skywalk1411/kirkaio/releases/tag/v1.7786
