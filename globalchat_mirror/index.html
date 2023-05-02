@@ -281,7 +281,7 @@
                     chated({ type: 2, user: null, message: `kirka.io chat widget disconnected (${event.code}) ${errorToText(event.code)}. reconnecting...` });
                     wsBm = null;
                     wsBm.close();
-                    lastData.timer = setInterval(reconnecBm, 5000);
+                    lastData.timer = setInterval(reconnecBm, 2500);
                 };
                 wsBm.onmessage = function (message) {
                     const delivery = JSON.parse(message.data);
