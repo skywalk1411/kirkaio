@@ -7,7 +7,8 @@
     <link rel="icon" type="image/x-icon" sizes="32x32" href="https://kirka.lukeskywalk.com/favicon.ico">
     <meta property="og:title" content="kirka.lukeskywalk.com: a lightweight unofficial kirka.io global chat mirror.">
     <meta name="description" content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
-    <meta property="og:description" content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
+    <meta property="og:description"
+        content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
     <meta name="theme-color" content="#000000">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
@@ -55,118 +56,69 @@
             const legendaryTag = /(\[.*?(\|.*?\||\|\|?).*?\|LEGENDARY\]).*/i;
             const mythicalTag = /(\[.*?(\|.*?\||\|\|?).*?\|MYTHICAL\]).*/i;
             document.getElementById('autoscrolling').checked = true;
+            const trimsplit = (x) => {
+                let parts = [];
+                let lastIndex = 0;
+                for (let match of x.matchAll(/\[.*?\|.*?\|.*?\|.*?\]/g)) {
+                    if (match.index !== lastIndex) {
+                        parts.push(x.slice(lastIndex, match.index));
+                    }
+                    parts.push(match[0]);
+                    lastIndex = match.index + match[0].length;
+                } if (lastIndex !== x.length) {
+                    parts.push(x.substr(lastIndex));
+                } return parts;
+            };
             const trimMessage = (messageSplit) => {
                 let delivery = document.createElement('p');
-                delivery.setAttribute('class','mb-0')
-                for ( let i=0; i < messageSplit.length; i++) {
+                delivery.setAttribute('class', 'mb-0')
+                for (let i = 0; i < messageSplit.length; i++) {
+                    let tradeHack = 0;
                     let sample = document.createElement('span');
-                    let [spacedHack,hackStatus,tradeStatus] = [null,0,0];
-                    const msgSplitStartWithBracket = messageSplit[i].indexOf('[')===0;
-                    const msgSplitDoesntEndWithCloseBracket = !messageSplit[i].match(/\]/);
-                    const msgSplitPlusOneFitLength = i+1 < messageSplit.length;
-                    const msgSplitPlusOneEndWithCloseBracket = messageSplit[i+1]?.match(/\]/);
-                    const msgSplitPlusTwoFitLength = i+2 < messageSplit.length;
-                    const msgSplitPlusTwoEndWithCloseBracket = messageSplit[i+2]?.match(/\]/);
-                    if (msgSplitStartWithBracket && msgSplitDoesntEndWithCloseBracket) {
-                        if (msgSplitPlusOneFitLength && msgSplitPlusOneEndWithCloseBracket) {
-                            spacedHack = messageSplit[i]+' '+messageSplit[i+1];
-                            hackStatus = 1; 
-                        }
-                        if (msgSplitPlusTwoFitLength && msgSplitPlusTwoEndWithCloseBracket) {
-                            spacedHack = messageSplit[i]+' '+messageSplit[i+1]+' '+messageSplit[i+2];
-                            hackStatus = 2;
-                        }
-                    }
                     const msgSplitHasCommonTag = commonTag.test(messageSplit[i]);
-                    const msgSplitIsHackedOneAndHasCommonTag = (hackStatus===1&&commonTag.test(spacedHack));
-                    const msgSplitIsHackedTwoAndHasCommonTag = (hackStatus===2&&commonTag.test(spacedHack));
-                    const stateIsHackedOneOrTwo = (hackStatus===1||hackStatus===2);
                     const msgSplitHasRareTag = rareTag.test(messageSplit[i]);
-                    const msgSplitIsHackedOneAndHasRareTag = (hackStatus===1&&rareTag.test(spacedHack));
-                    const msgSplitIsHackedTwoAndHasRareTag = (hackStatus===2&&rareTag.test(spacedHack));
                     const msgSplitHasEpicTag = epicTag.test(messageSplit[i]);
-                    const msgSplitIsHackedOneAndHasEpicTag = (hackStatus===1&&epicTag.test(spacedHack));
-                    const msgSplitIsHackedTwoAndHasEpicTag = (hackStatus===2&&epicTag.test(spacedHack));
                     const msgSplitHasLegendaryTag = legendaryTag.test(messageSplit[i]);
-                    const msgSplitIsHackedOneAndHasLegendaryTag = (hackStatus===1&&legendaryTag.test(spacedHack));
-                    const msgSplitIsHackedTwoAndHasLegendaryTag = (hackStatus===2&&legendaryTag.test(spacedHack));
                     const msgSplitHasMythicalTag = mythicalTag.test(messageSplit[i])
-                    const msgSplitIsHackedOneAndHasMythicalTag = (hackStatus===1&&mythicalTag.test(spacedHack));
-                    const msgSplitIsHackedTwoAndHasMythicalTag = (hackStatus===2&&mythicalTag.test(spacedHack));
-                    const msgSplitHasTradeTag = messageSplit[i]==='**/trade';
-                    if (msgSplitHasCommonTag||msgSplitIsHackedOneAndHasCommonTag||msgSplitIsHackedTwoAndHasCommonTag) {
+                    const msgSplitHasTradeTag = tradeTag.test(messageSplit[i]);
+                    if (msgSplitHasCommonTag) {
                         sample.style.color = 'Aquamarine';
-                        if (stateIsHackedOneOrTwo) {
-                            sample.textContent = `${spacedHack.replace('|COMMON]',']')}`;
-                        } else {
-                            sample.textContent = `${messageSplit[i].replace('|COMMON]',']')}`;
-                        }
-                    } else if (msgSplitHasRareTag||msgSplitIsHackedOneAndHasRareTag||msgSplitIsHackedTwoAndHasRareTag) {
+                        sample.textContent = `${messageSplit[i].replace('|COMMON]', ']')}`;
+                    } else if (msgSplitHasRareTag) {
                         sample.style.color = 'Aqua';
-                        if (hackStatus===1||hackStatus===2) {
-                            sample.textContent = `${spacedHack.replace('|RARE]',']')}`;
-                        } else {
-                            sample.textContent = `${messageSplit[i].replace('|RARE]',']')}`;
-                        }
-                    } else if (msgSplitHasEpicTag||msgSplitIsHackedOneAndHasEpicTag||msgSplitIsHackedTwoAndHasEpicTag) {
+                        sample.textContent = `${messageSplit[i].replace('|RARE]', ']')}`;
+                    } else if (msgSplitHasEpicTag) {
                         sample.style.color = 'BlueViolet'
-                        if (hackStatus===1||hackStatus===2) {
-                            sample.textContent = `${spacedHack.replace('|EPIC]',']')}`;
-                        } else {
-                            sample.textContent = `${messageSplit[i].replace('|EPIC]',']')}`;
-                        }
-                    } else if (msgSplitHasLegendaryTag||msgSplitIsHackedOneAndHasLegendaryTag||msgSplitIsHackedTwoAndHasLegendaryTag) {
-                        sample.setAttribute('class','text-warning');
-                        if (hackStatus===1||hackStatus===2) {
-                            sample.textContent = `${spacedHack.replace('|LEGENDARY]',']')}`;
-                        } else {
-                            sample.textContent = `${messageSplit[i].replace('|LEGENDARY]',']')}`;
-                        }
-                    } else if (msgSplitHasMythicalTag||msgSplitIsHackedOneAndHasMythicalTag||msgSplitIsHackedTwoAndHasMythicalTag) {
+                        sample.textContent = `${messageSplit[i].replace('|EPIC]', ']')}`;
+                    } else if (msgSplitHasLegendaryTag) {
+                        sample.setAttribute('class', 'text-warning');
+                        sample.textContent = `${messageSplit[i].replace('|LEGENDARY]', ']')}`;
+                    } else if (msgSplitHasMythicalTag) {
                         sample.style.color = 'FireBrick';
-                        if (hackStatus===1||hackStatus===2) {
-                            sample.textContent = `${spacedHack.replace('|MYTHICAL]',']')}`;
-                        } else {
-                            sample.textContent = `${messageSplit[i].replace('|MYTHICAL]',']')}`;
-                        }
+                        sample.textContent = `${messageSplit[i].replace('|MYTHICAL]', ']')}`;
                     } else if (msgSplitHasTradeTag) {
-                        sample.setAttribute('class','text-danger-emphasis stretched-link');
-                        sample.setAttribute('href',`javascript:;`);
-                        sample.setAttribute('role','button');
-                        sample.setAttribute('onclick',`copyClipboard('TRADE${preferences.nonce}')`);
-                        sample.setAttribute('id',`TRADE${preferences.nonce}`);
-                        let tagSpacer = document.createElement('span');
-                        tagSpacer.setAttribute('class','text-danger-emphasis');
-                        tagSpacer.textContent = '**';
-                        delivery.appendChild(tagSpacer);
-                        tradeStatus = 1;
-                        let curedTrade = `${messageSplit[i].replace('**','')} ${messageSplit[i+1]} ${messageSplit[i+2].replace('**','')}`;
-                        sample.textContent = curedTrade;
-                        i+=2;
-                    }  else {
+                        let newSplit = messageSplit[i].trim().split('**');
+                        tradeHack = 1;
+                        let newSample = document.createElement('span');
+                        let lastSample = document.createElement('span');
+                        sample.textContent = `${newSplit[0]}**`;
+                        delivery.appendChild(sample);
+                        newSample.setAttribute('class','text-danger-emphasis stretched-link');
+                        newSample.setAttribute('href',`javascript:;`);
+                        newSample.setAttribute('role','button');
+                        newSample.setAttribute('onclick',`copyClipboard('TRADE${preferences.nonce}')`);
+                        newSample.setAttribute('id',`TRADE${preferences.nonce}`);
+                        newSample.textContent = `${newSplit[1]}`;
+                        delivery.appendChild(newSample);
+                        lastSample.textContent = `**${newSplit[2]}`;
+                        delivery.appendChild(lastSample);
+
+                    } else {
                         sample.textContent = `${messageSplit[i]}`;
                     }
-                    i = (hackStatus===1)? i+1 : (hackStatus===2) ? i+2 : i;
-                    if (i===messageSplit.length-1) {
+                    if (tradeHack === 0) {
                         delivery.appendChild(sample);
-                        if (tradeStatus === 1) {
-                            let tagSpacer = document.createElement('span');
-                            tagSpacer.setAttribute('class','text-danger-emphasis');
-                            tagSpacer.textContent = '**';
-                            delivery.appendChild(tagSpacer);
-                        }
-                    } else {
-                        let spacer = document.createElement('span');
-                        spacer.textContent = ' ';
-                        delivery.appendChild(sample);
-                        if (tradeStatus === 1) {
-                            let tagSpacer = document.createElement('span');
-                            tagSpacer.setAttribute('class','text-danger-emphasis');
-                            tagSpacer.textContent = '**';
-                            delivery.appendChild(tagSpacer);
-                        }
-                        delivery.appendChild(spacer);
-                    }
+                    }                     
                 }
                 return delivery;
             };
@@ -224,7 +176,7 @@
                     default:
                 }
             };
-            const copyClipboard = async (target)=> {
+            const copyClipboard = async (target) => {
                 let range = document.createRange();
                 range.selectNode(document.getElementById(target));
                 window.getSelection().removeAllRanges();
@@ -233,7 +185,7 @@
                 window.getSelection().removeAllRanges();
             };
             const testChated = () => {
-                let delivery = {message: 'MUFASA_685#Q15D2K is offering [TEST||BODY|COMMON], [Galaxy|LAR|WEAPON_SKIN|EPIC], [Winter|Weatie|WEAPON_SKIN|RARE]x2, [Spectacular|AR-9|WEAPON_SKIN|LEGENDARY], [Pink Demon|M60|WEAPON_SKIN|MYTHICAL], [Fur|VITA|WEAPON_SKIN|EPIC], [Hardened|VITA|WEAPON_SKIN|EPIC] for [Black Metal 2.0|VITA|WEAPON_SKIN|LEGENDARY], type  **/trade accept 10848** to accept this offer',type: 2,user: null/*{ id: 'blabla',level: 669,name: 'testsubject',role: 'USER',shortId: 'BUBU4A'}*/};
+                let delivery = { message: 'MUFASA_685#Q15D2K is offering [TEST||BODY|COMMON], [Galaxy|LAR|WEAPON_SKIN|EPIC], [Winter|Weatie|WEAPON_SKIN|RARE]x2, [Spectacular|AR-9|WEAPON_SKIN|LEGENDARY], [Pink Demon|M60|WEAPON_SKIN|MYTHICAL], [Fur|VITA|WEAPON_SKIN|EPIC], [Hardened|VITA|WEAPON_SKIN|EPIC] for [Black Metal 2.0|VITA|WEAPON_SKIN|LEGENDARY], type  **/trade accept 10848** to accept this offer', type: 2, user: null/*{ id: 'blabla',level: 669,name: 'testsubject',role: 'USER',shortId: 'BUBU4A'}*/ };
                 chated(delivery);
             };
             const chated = (x) => {
@@ -245,10 +197,10 @@
                     nickname = '🛡️' + nickname;
                 }
                 const msg = x.message;
-                const msgSplit = msg.trim().split(/ +/g);
+                const msgSplit = trimsplit(msg);
                 const userIsntServerAndIsLastPostedMessage = (x.user != null && x.user?.name === preferences.lastUser);
                 if (userIsntServerAndIsLastPostedMessage) {
-                    let oldMessage = document.getElementById(`ID${preferences.nonce-1}`);
+                    let oldMessage = document.getElementById(`ID${preferences.nonce - 1}`);
                     oldMessage.appendChild(trimMessage(msgSplit));
                     if (preferences.autoscroll === 1) {
                         document.getElementById('chatter').scrollIntoView(false);
@@ -292,10 +244,10 @@
                     let bigShortLink = document.createElement('span');
                     if (!userIsServer) {
                         bigShortLink.setAttribute('id', `USER${preferences.nonce}${x.user?.shortId}`);
-                        bigShortLink.setAttribute('class','stretched-link text-secondary');
-                        bigShortLink.setAttribute('href',`javascript:;`);
-                        bigShortLink.setAttribute('role','button');
-                        bigShortLink.setAttribute('onclick',`copyClipboard('USER${preferences.nonce}${x.user?.shortId}')`);
+                        bigShortLink.setAttribute('class', 'stretched-link text-secondary');
+                        bigShortLink.setAttribute('href', `javascript:;`);
+                        bigShortLink.setAttribute('role', 'button');
+                        bigShortLink.setAttribute('onclick', `copyClipboard('USER${preferences.nonce}${x.user?.shortId}')`);
                         bigShortLink.textContent = `#${x.user?.shortId}`;
                     }
                     big.appendChild(bigShortLink);
@@ -322,7 +274,7 @@
                     chated({ type: 2, user: null, message: 'kirka.io chat connected.' });
                 };
                 wsBm.onerror = function (err) {
-                    chated({ type: 2, user: null, message: `kirka.io chat encountered an error ${err}.`});
+                    chated({ type: 2, user: null, message: `kirka.io chat encountered an error ${err}.` });
                     wsBm.close();
                 }
                 wsBm.onclose = function (event) {
@@ -334,7 +286,7 @@
                 wsBm.onmessage = function (message) {
                     const delivery = JSON.parse(message.data);
                     if (delivery.type === 3) {
-                        for (let i = delivery.messages.length-1; i > -1; i--) {
+                        for (let i = delivery.messages.length - 1; i > -1; i--) {
                             chated(delivery.messages[i])
                         }
                     }
