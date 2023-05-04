@@ -82,7 +82,7 @@
                     const msgSplitHasTradeTag = tradeTag.test(messageSplit[i]);
                     if (msgSplitHasCommonTag) {
                         sample.style.color = 'Aquamarine';
-                        sample.textContent = `${messageSplit[i].replace('|COMMON]', ']')}`;
+                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}]`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
@@ -90,7 +90,7 @@
                         sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
                     } else if (msgSplitHasRareTag) {
                         sample.style.color = 'Aqua';
-                        sample.textContent = `${messageSplit[i].replace('|RARE]', ']')}`;
+                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}]`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
@@ -98,7 +98,7 @@
                         sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
                     } else if (msgSplitHasEpicTag) {
                         sample.style.color = 'BlueViolet'
-                        sample.textContent = `${messageSplit[i].replace('|EPIC]', ']')}`;
+                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}]`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
@@ -106,7 +106,7 @@
                         sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
                     } else if (msgSplitHasLegendaryTag) {
                         sample.setAttribute('class', 'text-warning');
-                        sample.textContent = `${messageSplit[i].replace('|LEGENDARY]', ']')}`;
+                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}]`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
@@ -114,7 +114,7 @@
                         sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
                     } else if (msgSplitHasMythicalTag) {
                         sample.style.color = 'FireBrick';
-                        sample.textContent = `${messageSplit[i].replace('|MYTHICAL]', ']')}`;
+                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}]`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
