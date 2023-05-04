@@ -7,8 +7,7 @@
     <link rel="icon" type="image/x-icon" sizes="32x32" href="https://kirka.lukeskywalk.com/favicon.ico">
     <meta property="og:title" content="kirka.lukeskywalk.com: a lightweight unofficial kirka.io global chat mirror.">
     <meta name="description" content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
-    <meta property="og:description"
-        content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
+    <meta property="og:description" content="kirka.lukeskywalk.com: a lightweight unofficial  kirka.io global chat mirror.">
     <meta name="theme-color" content="#000000">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
@@ -84,18 +83,43 @@
                     if (msgSplitHasCommonTag) {
                         sample.style.color = 'Aquamarine';
                         sample.textContent = `${messageSplit[i].replace('|COMMON]', ']')}`;
+                        sample.setAttribute('type','link');
+                        sample.setAttribute('data-bs-toggle','tooltip');
+                        sample.setAttribute('data-bs-html','true');
+                        sample.setAttribute('data-bs-trigger','hover');
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
                     } else if (msgSplitHasRareTag) {
                         sample.style.color = 'Aqua';
                         sample.textContent = `${messageSplit[i].replace('|RARE]', ']')}`;
+                        sample.setAttribute('type','link');
+                        sample.setAttribute('data-bs-toggle','tooltip');
+                        sample.setAttribute('data-bs-html','true');
+                        sample.setAttribute('data-bs-trigger','hover');
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
                     } else if (msgSplitHasEpicTag) {
                         sample.style.color = 'BlueViolet'
                         sample.textContent = `${messageSplit[i].replace('|EPIC]', ']')}`;
+                        sample.setAttribute('type','link');
+                        sample.setAttribute('data-bs-toggle','tooltip');
+                        sample.setAttribute('data-bs-html','true');
+                        sample.setAttribute('data-bs-trigger','hover');
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
                     } else if (msgSplitHasLegendaryTag) {
                         sample.setAttribute('class', 'text-warning');
                         sample.textContent = `${messageSplit[i].replace('|LEGENDARY]', ']')}`;
+                        sample.setAttribute('type','link');
+                        sample.setAttribute('data-bs-toggle','tooltip');
+                        sample.setAttribute('data-bs-html','true');
+                        sample.setAttribute('data-bs-trigger','hover');
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
                     } else if (msgSplitHasMythicalTag) {
                         sample.style.color = 'FireBrick';
                         sample.textContent = `${messageSplit[i].replace('|MYTHICAL]', ']')}`;
+                        sample.setAttribute('type','link');
+                        sample.setAttribute('data-bs-toggle','tooltip');
+                        sample.setAttribute('data-bs-html','true');
+                        sample.setAttribute('data-bs-trigger','hover');
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
                     } else if (msgSplitHasTradeTag) {
                         let newSplit = messageSplit[i].trim().split('**');
                         tradeHack = 1;
@@ -263,6 +287,10 @@
                     if (preferences.autoscroll === 1) {
                         document.getElementById('chatter').scrollIntoView(false);
                     }
+                    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                    const tooltipList3 = document.querySelectorAll(`[class='tooltip-inner']`);
+                    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+                    const tooltipList2 = [...tooltipList3].map(tooltipTriggerEl2 => { if (preferences.autoscroll === 1) { tooltipTriggerEl2.hidden = true }});
                 }
             };
             chated({ type: 2, user: null, message: 'kirka.io chat connecting...' });
@@ -280,7 +308,7 @@
                 wsBm.onclose = function (event) {
                     chated({ type: 2, user: null, message: `kirka.io chat widget disconnected (${event.code}) ${errorToText(event.code)}. reconnecting...` });
                     wsBm = null;
-                    wsBm.close();
+                    //wsBm.close();
                     lastData.timer = setInterval(reconnecBm, 2500);
                 };
                 wsBm.onmessage = function (message) {
