@@ -290,9 +290,9 @@
                     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
                     const tooltipList3 = document.querySelectorAll(`[class='tooltip-inner']`);
                     const tooltipList4 = document.querySelectorAll(`[class='tooltip-arrow']`);
-                    const hack0 = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
                     const hack1 = [...tooltipList3].map(tooltipTriggerEl2 => { if (preferences.autoscroll === 1) { tooltipTriggerEl2.hidden = true }});
                     const hack2 = [...tooltipList4].map(tooltipTriggerEl2 => { if (preferences.autoscroll === 1) { tooltipTriggerEl2.hidden = true }});
+                    const hack0 = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
                 }
             };
             chated({ type: 2, user: null, message: 'kirka.io chat connecting...' });
