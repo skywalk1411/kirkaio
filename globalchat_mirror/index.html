@@ -83,46 +83,47 @@
                     const msgSplitHasLegendaryTag = legendaryTag.test(messageSplit[i]);
                     const msgSplitHasMythicalTag = mythicalTag.test(messageSplit[i])
                     const msgSplitHasTradeTag = tradeTag.test(messageSplit[i]);
+                    const itemNameSplit = messageSplit[i].slice(1,messageSplit[i].indexOf('|'))
                     if (msgSplitHasCommonTag) {
                         sample.style.color = 'Aquamarine';
-                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}] (${(shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))] === '')? '100': shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))]})`;
+                        sample.textContent = `[${itemNameSplit}] (${(shortItemsPrices[allItemsList.indexOf(itemNameSplit)] === '')? '100': shortItemsPrices[allItemsList.indexOf(itemNameSplit)]})`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
                         sample.setAttribute('data-bs-trigger','hover');
-                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${itemNameSplit}-render.png' title='${itemNameSplit}'' alt='${itemNameSplit}'</img>`);
                     } else if (msgSplitHasRareTag) {
                         sample.style.color = 'Aqua';
-                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}] (${(shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))] === '')? '250': shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))]})`;
+                        sample.textContent = `[${itemNameSplit}] (${(shortItemsPrices[allItemsList.indexOf(itemNameSplit)] === '')? '250': shortItemsPrices[allItemsList.indexOf(itemNameSplit)]})`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
                         sample.setAttribute('data-bs-trigger','hover');
-                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${itemNameSplit}-render.png' title='${itemNameSplit}'' alt='${itemNameSplit}'</img>`);
                     } else if (msgSplitHasEpicTag) {
                         sample.style.color = 'BlueViolet'
-                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}] (${(shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))] === '')? '1000': shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))]})`;
+                        sample.textContent = `[${itemNameSplit}] (${(shortItemsPrices[allItemsList.indexOf(itemNameSplit)] === '')? '1k': shortItemsPrices[allItemsList.indexOf(itemNameSplit)]})`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
                         sample.setAttribute('data-bs-trigger','hover');
-                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${itemNameSplit}-render.png' title='${itemNameSplit}'' alt='${itemNameSplit}'</img>`);
                     } else if (msgSplitHasLegendaryTag) {
                         sample.setAttribute('class', 'text-warning');
-                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}] (${(shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))] === '')? '5000': shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))]})`;
+                        sample.textContent = `[${itemNameSplit}] (${(shortItemsPrices[allItemsList.indexOf(itemNameSplit)] === '')? '5k': shortItemsPrices[allItemsList.indexOf(itemNameSplit)]})`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
                         sample.setAttribute('data-bs-trigger','hover');
-                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${itemNameSplit}-render.png' title='${itemNameSplit}'' alt='${itemNameSplit}'</img>`);
                     } else if (msgSplitHasMythicalTag) {
                         sample.style.color = 'FireBrick';
-                        sample.textContent = `[${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}] (${(shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))] === '')? '20000': shortItemsPrices[allItemsList.indexOf(messageSplit[i].slice(1,messageSplit[i].indexOf('|')))]})`;
+                        sample.textContent = `[${itemNameSplit}] (${(shortItemsPrices[allItemsList.indexOf(itemNameSplit)] === '')? '20k': shortItemsPrices[allItemsList.indexOf(itemNameSplit)]})`;
                         sample.setAttribute('type','link');
                         sample.setAttribute('data-bs-toggle','tooltip');
                         sample.setAttribute('data-bs-html','true');
                         sample.setAttribute('data-bs-trigger','hover');
-                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}-render.png' title='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'' alt='${messageSplit[i].slice(1,messageSplit[i].indexOf('|'))}'</img>`);
+                        sample.setAttribute('data-bs-title',`<img src='https://kirka.lukeskywalk.com/static/renders/${itemNameSplit}-render.png' title='${itemNameSplit}'' alt='${itemNameSplit}'</img>`);
                     } else if (msgSplitHasTradeTag) {
                         let newSplit = messageSplit[i].trim().split('**');
                         tradeHack = 1;
